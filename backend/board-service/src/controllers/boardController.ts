@@ -30,7 +30,9 @@ export const getOwnerBoard = async (req: Request, res: Response) => {
 };
 
 export const createBoard = async (req: Request, res: Response) => {
-  const { board_name , owner_id } = req.body;
+  const { board_name  } = req.body;
+  //@ts-ignore
+  const owner_id = req.owner_id
   try {
     const board = await Board.create({ name : board_name, owner_id });
     await BoardMember.create({ board_id: board.id, user_id: owner_id, role: 'admin' });
@@ -43,8 +45,9 @@ export const createBoard = async (req: Request, res: Response) => {
 
 export const deleteBoard = async (req: Request, res: Response) => {
   const { board_id } = req.params;
-  const user_id = req.body!.owner_id;
-  const board = await Board.findOne({ where: { id: board_id, owner_id: user_id } });
+  //@ts-ignore
+  const owner_id = req.owner_id;
+  const board = await Board.findOne({ where: { id: board_id, owner_id: owner_id } });
   if (!board) return res.status(404).json({ error: 'Board not found or unauthorized' });
   await board.destroy();
   res.json({ success: true });
@@ -161,22 +164,24 @@ export const renameColumn = async (req: Request, res: Response) => {
 export const createTask = async (req: Request, res: Response) => {
   const { column_id } = req.params;
   const { task_name, task_description, task_position } = req.body;
-  const user_id = req.body!.owner_id;
+  //@ts-ignore
+  const user_id = req.owner_id;
   const column = await ColumnModel.findOne({
     where: { id: column_id },
     include: [{ model: Board, where: { owner_id: user_id } }]
   });
   if (!column) return res.status(404).json({ error: 'Column not found or unauthorized' });
-  const task = await Task.create({ column_id, task_name, task_description, task_position });
+  const task = await Task.create({ column_id : column_id, name : task_name, description : task_description, position : task_position });
   res.status(201).json({ task_id: task.id });
 };
 
 export const deleteTask = async (req: Request, res: Response) => {
   const { task_id } = req.params;
-  const user_id = req.body!.id;
+  //@ts-ignore
+  const owner_id = req.owner_id;
   const task = await Task.findOne({
     where: { id: task_id },
-    include: [{ model: ColumnModel, include: [{ model: Board, where: { owner_id: user_id } }] }]
+    include: [{ model: ColumnModel, include: [{ model: Board, where: { owner_id: owner_id } }] }]
   });
   if (!task) return res.status(404).json({ error: 'Task not found or unauthorized' });
   await task.destroy();
@@ -186,10 +191,11 @@ export const deleteTask = async (req: Request, res: Response) => {
 export const renameTask = async (req: Request, res: Response) => {
   const { task_id } = req.params;
   const { task_name, task_description } = req.body;
-  const user_id = req.body!.owner_id;
+  //@ts-ignore
+  const owner_id = req.owner_id;
   const task = await Task.findOne({
     where: { id: task_id },
-    include: [{ model: ColumnModel, include: [{ model: Board, where: { owner_id: user_id } }] }]
+    include: [{ model: ColumnModel, include: [{ model: Board, where: { owner_id: owner_id } }] }]
   });
   if (!task) return res.status(404).json({ error: 'Task not found or unauthorized' });
   task.name = task_name;
@@ -201,12 +207,13 @@ export const renameTask = async (req: Request, res: Response) => {
 export const getColumnTask = async (req: Request, res: Response) => {
     const { column_id } = req.params; 
    
-    const user_id = req.body!.owner_id; 
+    //@ts-ignore
+    const owner_id = req.owner_id; 
 
     try {
         const column = await ColumnModel.findOne({
             where: { id: column_id },
-            include: [{ model: Board, where: { owner_id: user_id } }]
+            include: [{ model: Board, where: { owner_id: owner_id } }]
         });
 
         if (!column) {
@@ -215,7 +222,7 @@ export const getColumnTask = async (req: Request, res: Response) => {
 
         const tasks = await Task.findAll({
             where: { column_id: column_id },
-            order: [['task_position', 'ASC']] 
+            order: [['id', 'ASC']] 
         });
         res.json({ tasks });
 
@@ -237,8 +244,6 @@ export const assignTask = async (req: Request, res: Response) => {
   try {
     const assigned_user_id = user_id;
     await TaskAssignee.create({ task_id, user_id: assigned_user_id });
-    const io = req.app.get('io');
-    io.to(assigned_user_id.toString()).emit('notification', { message: `Assigned to task ${task_id}` });
     res.json({ success: true });
   } catch (err) {
     res.status(404).json({ error: 'User not found' });
@@ -264,14 +269,14 @@ export const addTag = async (req: Request, res: Response) => {
 
 export const getBoard = async (req: Request, res: Response) => {
   const { board_id } = req.params;
-  const user_id = req.body!.id;
-  const cacheKey = `board:${board_id}`;
+  //@ts-ignore
+  const owner_id = req.owner_id;
   try {
     const board = await Board.findOne({
       where: { id: board_id },
       include: [
         { model: ColumnModel, include: [Task] },
-        { model: BoardMember, where: { user_id } }
+        { model: BoardMember, where: { user_id : owner_id } }
       ]
     });
     if (!board) return res.status(404).json({ error: 'Board not found or unauthorized' });

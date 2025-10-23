@@ -28,10 +28,9 @@ const TaskForm: React.FC<Props> = ({ columnId, task, onClose }) => {
 
     try {
       if (isEditMode) {
-        await updateTask(task.id, { name, description });
+        await updateTask(task.id, { task_name : name , task_description : description });
       } else {
-        const newTaskData = { name, column_id: columnId, description: description || undefined };
-        await createTask(newTaskData);
+        await createTask( columnId , { task_name : name , task_description : description , task_position : 0 });
       }
       onClose(); 
     } catch (err) {

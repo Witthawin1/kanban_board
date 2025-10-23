@@ -10,8 +10,8 @@ import {
 
 const router = Router();
 router.use(authMiddleware);
+
 router.get('/boards' , getOwnerBoard)
-router.get('/boards/:owner_id' , getOwnerBoard)
 router.post('/boards', createBoard);
 router.patch('/boards/:board_id', renameBoard);
 router.delete('/boards/:board_id', deleteBoard);
@@ -28,7 +28,7 @@ router.post('/columns/:column_id/tasks', createTask);
 router.delete('/tasks/:task_id', deleteTask);
 router.patch('/tasks/:task_id', renameTask);
 
-router.post('/columns/:column_id/tasks/all', getColumnTask);
+router.get('/columns/:column_id/tasks/all', getColumnTask);
 
 router.post('/tasks/:task_id/assign', assignTask);
 

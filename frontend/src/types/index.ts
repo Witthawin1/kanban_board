@@ -18,6 +18,7 @@ export interface Column {
 export interface Task {
   id: number;
   column_id: number;
+  userId: number;
   name: string;
   description?: string;
   position: number;

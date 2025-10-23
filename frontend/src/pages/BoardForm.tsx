@@ -30,7 +30,6 @@ const BoardForm: React.FC = () => {
                 if (isEditMode && board_id) {
                     const response = await getBoardDetail(parseInt(board_id));
                     
-                  
                     if (response && response.boards && Array.isArray(response.boards)) {
                         boardData = response.boards.find((b: BoardType) => b.id === parseInt(board_id));
                     } else if (response && response.id) {

@@ -91,7 +91,7 @@ const Register: React.FC = () => {
                     className={`w-full py-3 px-4 rounded-lg text-white font-semibold shadow-md transition duration-200 ease-in-out transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50
                       ${isLoading
                         ? 'bg-green-400 cursor-not-allowed'
-                        : 'bg-green-600 hover:bg-green-700 shadow-green-400/50' // ใช้ green-600 และเงาเขียว
+                        : 'bg-green-600 hover:bg-green-700 shadow-green-400/50' 
                       }`}
                 >
                     {isLoading ? 'Registering...' : 'Sign Up'}

@@ -17,7 +17,7 @@ const Dashboard: React.FC = () => {
     const fetchBoards = async () => {
       try {
         const tokenData = await getTokenData(); 
-        const data = await getBoards(tokenData.userId);
+        const data = await getBoards();
         setBoards(data);
         setError(null);
       } catch (err) {

@@ -5,7 +5,6 @@ import Register from './pages/Register';
 import Dashboard from './pages/DashBoard';
 import Board from './pages/Board';
 import BoardForm from './pages/BoardForm';
-import Notifications from './pages/Notification';
 import './App.css'
 import './index.css'
 
@@ -19,7 +18,6 @@ const App: React.FC = () => {
         <Route path="/board/:board_id" element={<Board />} />
         <Route path="/board/new" element={<BoardForm />} />
         <Route path="/board/edit/:board_id" element={<BoardForm />} />
-        <Route path="/notifications" element={<Notifications />} />
         <Route path="/" element={<Login />} />
       </Routes>
     </Router>

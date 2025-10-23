@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt'
 import { User } from "../models/User";
 import { generateToken } from '../../../utils/jwtUtils'
 
-export const register = async (req:Request , res:Response) => {
+export const register = async (req : Request , res : Response) => {
     const {username , email , password} = req.body
     try{
         const hashed = await bcrypt.hash(password , 10)
@@ -18,7 +18,7 @@ export const login = async (req : Request , res : Response) => {
     const {email , password} = req.body
     const user = await User.findOne({where : {email}})
     if (!user || !(await bcrypt.compare(password , user.password_hash))) {
-        return res.status(404).json('Invalid Credential')
+        return res.status(401).json('Invalid Credential')
     }
     const token = generateToken(user.id)
     res.json({ user_id : user.id , email : user.email , token})

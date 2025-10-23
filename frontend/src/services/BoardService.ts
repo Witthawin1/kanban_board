@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Board, Task, Column } from '../types'; // Ensure Column and Task types are imported
+import { Board, Task, Column } from '../types'; 
 
 const API_BASE_URL = 'http://localhost:3002';
 
@@ -12,7 +12,7 @@ const getHeaders = (data?: any) => ({
 
 export const createTask = async (
     columnId: number,
-    task: { task_name: string; task_description?: string; task_position: number; owner_id: number }
+    task: { task_name: string; task_description?: string; task_position: number; }
 ): Promise<{ task_id: number }> => {
     const data = task;
     const response = await axios.post(
@@ -25,7 +25,7 @@ export const createTask = async (
 
 export const updateTask = async (
     taskId: number,
-    task: { task_name: string; task_description?: string; owner_id: number }
+    task: { task_name: string; task_description?: string; }
 ): Promise<any> => {
     const data = task;
     const response = await axios.patch(
@@ -38,22 +38,18 @@ export const updateTask = async (
 
 export const deleteTaskService = async ( 
     taskId: number,
-    userId: number
 ): Promise<void> => {
     
-    const data = { id: userId }; 
-
     await axios.delete(
         `${API_BASE_URL}/tasks/${taskId}`,
         {
-            headers: getHeaders(data),
-            data: data
+            headers: getHeaders()
         }
     );
 };
 
 
-export const getTasksForColumnService = async ( // NEW SERVICE
+export const getTasksForColumnService = async ( 
     columnId: number,
     ownerId: number
 ): Promise<Task[]> => {

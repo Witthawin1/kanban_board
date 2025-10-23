@@ -68,7 +68,7 @@ const Board: React.FC = () => {
 
             const columns = await retrieveAllColumnsService(
                 parseInt(board_id),
-                tokenData.userId
+                tokenData.userId!
             );
 
             const updatedBoard = { ...boardData, Columns: columns };
@@ -120,7 +120,7 @@ const Board: React.FC = () => {
                 parseInt(board_id),
                 {
                     board_name: newName.trim(), 
-                    owner_id: tokenData.userId 
+                    owner_id: tokenData.userId! 
                 }
             );
             
@@ -148,7 +148,7 @@ const Board: React.FC = () => {
 
         try {
             if (!tokenData) return;
-            await deleteBoard(parseInt(board_id), { owner_id: tokenData.userId });
+            await deleteBoard(parseInt(board_id), { owner_id: tokenData.userId! });
             alert(`Board '${board.name}' deleted successfully!`);
             navigate("/dashboard");
         } catch (err: any) {
@@ -172,7 +172,7 @@ const Board: React.FC = () => {
         try {
             await inviteMemberToBoard(
                 parseInt(board_id),
-                tokenData.userId,
+                tokenData.userId!,
                 inviteEmail
             );
             alert(`Invitation sent to ${inviteEmail}.`);
@@ -198,7 +198,7 @@ const Board: React.FC = () => {
                 parseInt(board_id),
                 newName.trim(),
                 position,
-                tokenData.userId
+                tokenData.userId!
             );
             refetchBoard();
         } catch (err: any) {
@@ -368,7 +368,7 @@ const ColumnComponent: React.FC<ColumnProps> = ({
         if (!window.confirm(`Are you sure you want to delete ${column.name}?`))
             return;
         try {
-            await deleteColumnService(column.id, parseInt(board_id));
+            await deleteColumnService(column.id, parseInt(board_id!));
             setBoard((prev) => {
                 if (!prev) return prev;
                 const updated = prev.Columns.filter((c) => c.id !== column.id);
@@ -418,7 +418,7 @@ const ColumnComponent: React.FC<ColumnProps> = ({
                         onClick={() => onEditTask(task)}
                         className="cursor-pointer hover:bg-indigo-50 transition rounded-lg"
                     >
-                        <TaskCard task={task} />
+                        <TaskCard task={task}/>
                     </div>
                 ))}
             </div>
